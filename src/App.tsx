@@ -1,62 +1,77 @@
-// src/App.tsx - Updated version
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
-import AdminLayout from "./layout/AdminLayout";
-import styles from "./App.module.scss";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
-import Products from "./pages/Products";
-import Users from "./pages/Users";
-import Orders from "./pages/Orders";
-import Login from "./pages/Login";
-import { useAppSelector, useAppDispatch } from "./store/hooks";
-import { checkAuthAsync } from "./store/store";
+// src/App.tsx - Enhanced version with Error Boundary
+import { Spin } from 'antd'
+import { useEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import styles from './App.module.scss'
+import ErrorBoundary from './components/ErrorBoundary'
+import AdminLayout from './layout/AdminLayout'
+import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import Orders from './pages/Orders'
+import Products from './pages/Products'
+import Profile from './pages/Profile'
+import Users from './pages/Users'
+import { useAppDispatch, useAppSelector } from './store/hooks'
+import { checkAuthAsync } from './store/store'
+
+// Loading component
+const LoadingSpinner = () => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      flexDirection: 'column',
+      gap: '16px',
+    }}
+  >
+    <Spin size="large" />
+    <p>Loading...</p>
+  </div>
+)
 
 export default function App() {
-  const { loggedIn, loading } = useAppSelector((s) => s.auth);
-  const dispatch = useAppDispatch();
+  const { loggedIn, loading } = useAppSelector((s) => s.auth)
+  const dispatch = useAppDispatch()
 
   // Check authentication status on app load
   useEffect(() => {
-    dispatch(checkAuthAsync());
-  }, [dispatch]);
+    // Only check auth if we don't have loading state and no current auth state
+    if (!loading) {
+      dispatch(checkAuthAsync())
+    }
+  }, [dispatch])
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return <LoadingSpinner />
+  }
 
   return (
-    <BrowserRouter>
-      <div className={styles.app}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              loading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                  }}
-                >
-                  Loading...
-                </div>
-              ) : loggedIn ? (
-                <AdminLayout />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="products" element={<Products />} />
-            <Route path="users" element={<Users />} />
-            <Route path="orders" element={<Orders />} />
-          </Route>
-          {/* Catch all route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+    <ErrorBoundary>
+      <BrowserRouter>
+        <div className={styles.app}>
+          <Routes>
+            <Route
+              path="/login"
+              element={loggedIn ? <Navigate to="/" replace /> : <Login />}
+            />
+            <Route
+              path="/"
+              element={loggedIn ? <AdminLayout /> : <Navigate to="/login" replace />}
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="products" element={<Products />} />
+              <Route path="users" element={<Users />} />
+              <Route path="orders" element={<Orders />} />
+            </Route>
+            {/* Catch all route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </ErrorBoundary>
+  )
 }

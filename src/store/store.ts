@@ -1,11 +1,5 @@
-// src/store/store.ts - Complete fixed version
-import {
-  configureStore,
-  createAsyncThunk,
-  createSlice,
-  type PayloadAction,
-} from '@reduxjs/toolkit'
-import type { LoginCredentials, RegisterData, User } from '../api/apiService'
+import { configureStore, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import type * as apiService from '../api/apiService'
 import {
   getCurrentUser,
   getStoredToken,
@@ -15,7 +9,7 @@ import {
   registerUser,
 } from '../api/apiService'
 
-// Types for other entities
+// Types for the application
 export interface Product {
   id: string
   name: string
@@ -28,18 +22,34 @@ export interface Product {
   favourite: boolean
 }
 
+export interface User {
+  id: string
+  name: string
+  email: string
+  active: boolean
+  mobile_number?: string
+  address?: string
+  last_name?: string
+  role?: string
+}
+
+export interface OrderItem {
+  productId: string
+  quantity: number
+}
+
 export interface Order {
   id: string
   userId: string
-  items: { productId: string; quantity: number }[]
+  items: OrderItem[]
   total: number
-  status: string
+  status: 'pending' | 'in progress' | 'success' | 'cancelled'
 }
 
-// Auth async thunks
+// Async thunks for auth actions
 export const loginAsync = createAsyncThunk(
   'auth/login',
-  async (credentials: LoginCredentials, { rejectWithValue }) => {
+  async (credentials: apiService.LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await loginUser(credentials)
       return response
@@ -51,7 +61,7 @@ export const loginAsync = createAsyncThunk(
 
 export const registerAsync = createAsyncThunk(
   'auth/register',
-  async (userData: RegisterData, { rejectWithValue }) => {
+  async (userData: apiService.RegisterData, { rejectWithValue }) => {
     try {
       const response = await registerUser(userData)
       return response
@@ -88,10 +98,9 @@ export const checkAuthAsync = createAsyncThunk(
   }
 )
 
-// Auth state interface
 export interface AuthState {
   loggedIn: boolean
-  user: User | null
+  user: apiService.User | null
   token: string | null
   loading: boolean
   error: string | null
@@ -106,7 +115,6 @@ const initialState: AuthState = {
   error: null,
 }
 
-// Auth slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -114,7 +122,7 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null
     },
-    // Keep old actions for backward compatibility
+    // Keep the old actions for backward compatibility
     login: (state) => {
       state.loggedIn = true
     },
@@ -124,7 +132,7 @@ const authSlice = createSlice({
       state.token = null
       state.error = null
     },
-    updateProfile: (state, action: PayloadAction<Partial<User>>) => {
+    updateProfile: (state, action) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload }
       }
@@ -215,10 +223,9 @@ const authSlice = createSlice({
   },
 })
 
-// Export auth actions
 export const { clearError, login, logout, updateProfile } = authSlice.actions
 
-// Configure store
+// Configure the store
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
@@ -231,9 +238,5 @@ export const store = configureStore({
     }),
 })
 
-// Export types
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
-
-// Re-export User type
-export type { User } from '../api/apiService'

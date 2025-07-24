@@ -1,4 +1,4 @@
-import { Table, Tag } from 'antd'
+import { Table, Tag, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { api } from '../api/mock'
 import type { Order, Product, User } from '../store/store'
@@ -40,7 +40,7 @@ export default function Orders() {
 
   return (
     <div className={styles.page}>
-      <h1>Orders</h1>
+      <Typography.Title>Orders</Typography.Title>
       <Table rowKey="id" dataSource={orders} columns={columns} />
       {orders.length === 0 && <p className={styles.empty}>No orders yet</p>}
     </div>

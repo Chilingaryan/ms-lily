@@ -1,5 +1,5 @@
 // src/pages/Profile.tsx - Updated version
-import { Alert, Button, Form, Input, message } from 'antd'
+import { Alert, Button, Form, Input, message, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { updateProfile as updateProfileAPI } from '../api/apiService'
@@ -127,7 +127,7 @@ export default function Profile() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h1>Profile</h1>
+        <Typography.Title>Profile</Typography.Title>
         <img className={styles.avatar} src="https://i.pravatar.cc/80" alt="avatar" />
 
         {error && (

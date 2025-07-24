@@ -1,4 +1,4 @@
-import { Table, Tag } from 'antd'
+import { Table, Tag, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { api } from '../api/mock'
 import type { Product } from '../store/store'
@@ -28,11 +28,9 @@ export default function Products() {
 
   return (
     <div className={styles.page}>
-      <h1>Products</h1>
+      <Typography.Title>Products</Typography.Title>
       <Table rowKey="id" dataSource={products} columns={columns} />
-      {products.length === 0 && (
-        <p className={styles.empty}>No products available</p>
-      )}
+      {products.length === 0 && <p className={styles.empty}>No products available</p>}
     </div>
   )
 }

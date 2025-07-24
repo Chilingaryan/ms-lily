@@ -1,4 +1,4 @@
-import { Table, Tag } from 'antd'
+import { Table, Tag, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { api } from '../api/mock'
 import type { User } from '../store/store'
@@ -26,7 +26,7 @@ export default function Users() {
 
   return (
     <div className={styles.page}>
-      <h1>Users</h1>
+      <Typography.Title>Users</Typography.Title>
       <Table rowKey="id" dataSource={users} columns={columns} />
       {users.length === 0 && <p className={styles.empty}>No users available</p>}
     </div>
