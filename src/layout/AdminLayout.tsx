@@ -28,7 +28,6 @@ export default function AdminLayout() {
           selectedKeys={[location.pathname]}
           items={[
             { key: '/', label: <Link to="/">Dashboard</Link> },
-            { key: '/profile', label: <Link to="/profile">Profile</Link> },
             { key: '/products', label: <Link to="/products">Products</Link> },
             { key: '/users', label: <Link to="/users">Users</Link> },
             { key: '/orders', label: <Link to="/orders">Orders</Link> },
@@ -40,7 +39,16 @@ export default function AdminLayout() {
           <Popover
             trigger="click"
             placement="bottomRight"
-            content={<Button type="text" onClick={handleLogout}>Logout</Button>}
+            content={
+              <div className={styles.popover}>
+                <Button type="text">
+                  <Link to="/profile">Profile</Link>
+                </Button>
+                <Button type="text" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </div>
+            }
           >
             <Avatar className={styles.avatar} icon={<UserOutlined />} />
           </Popover>

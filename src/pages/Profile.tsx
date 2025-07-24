@@ -8,6 +8,8 @@ interface FormValues {
   name: string
   email: string
   password: string
+  phone: string
+  address: string
 }
 
 export default function Profile() {
@@ -21,22 +23,30 @@ export default function Profile() {
 
   return (
     <div className={styles.page}>
-      <h1>Profile</h1>
-      <img className={styles.avatar} src="https://i.pravatar.cc/80" alt="avatar" />
-      <Form onFinish={handleSubmit(onSubmit)} layout="vertical" style={{ maxWidth: 400 }}>
-        <Form.Item label="Name">
-          <Input {...register('name', { required: true })} />
-        </Form.Item>
-        <Form.Item label="Email">
-          <Input {...register('email', { required: true })} />
-        </Form.Item>
-        <Form.Item label="Password">
-          <Input.Password {...register('password')} />
-        </Form.Item>
-        <Button type="primary" htmlType="submit">
-          Save
-        </Button>
-      </Form>
+      <div className={styles.card}>
+        <h1>Profile</h1>
+        <img className={styles.avatar} src="https://i.pravatar.cc/80" alt="avatar" />
+        <Form onFinish={handleSubmit(onSubmit)} layout="vertical" style={{ width: '100%' }}>
+          <Form.Item label="Name">
+            <Input {...register('name', { required: true })} />
+          </Form.Item>
+          <Form.Item label="Email">
+            <Input {...register('email', { required: true })} />
+          </Form.Item>
+          <Form.Item label="Phone">
+            <Input {...register('phone')} />
+          </Form.Item>
+          <Form.Item label="Address">
+            <Input {...register('address')} />
+          </Form.Item>
+          <Form.Item label="Password">
+            <Input.Password {...register('password')} />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            Save
+          </Button>
+        </Form>
+      </div>
     </div>
   )
 }

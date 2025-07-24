@@ -124,11 +124,19 @@ export interface Profile {
   name: string
   email: string
   password: string
+  phone: string
+  address: string
 }
 
 const profileSlice = createSlice<Profile>({
   name: 'profile',
-  initialState: { name: 'Admin', email: 'admin@example.com', password: '' } as Profile,
+  initialState: {
+    name: 'Admin',
+    email: 'admin@example.com',
+    password: '',
+    phone: '',
+    address: '',
+  } as Profile,
   reducers: {
     updateProfile: (_state: Profile, action: PayloadAction<Profile>) =>
       action.payload,
