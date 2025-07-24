@@ -1,39 +1,46 @@
 // src/pages/Profile.tsx - Updated version
 import { Alert, Button, Form, Input, message } from 'antd'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { updateProfile as updateProfileAPI } from '../api/apiService'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { updateProfile } from '../store/store'
+import { checkAuthAsync } from '../store/store'
 import styles from './Profile.module.scss'
 
 interface FormValues {
   name: string
+  last_name: string
   email: string
+  mobile_number: string
   password: string
-  phone: string
+  country: string
   address: string
+  city: string
+  postal_code: string
 }
 
 export default function Profile() {
-  const { user } = useAppSelector((s) => s.auth)
+  const { user, loading: authLoading } = useAppSelector((s) => s.auth)
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Set default values from the authenticated user
   const {
-    register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      name: user?.name || '',
-      email: user?.email || '',
+      name: '',
+      last_name: '',
+      email: '',
+      mobile_number: '',
       password: '',
-      phone: user?.mobile_number || '',
-      address: user?.address || '',
+      country: '',
+      address: '',
+      city: '',
+      postal_code: '',
     },
   })
 
@@ -42,10 +49,14 @@ export default function Profile() {
     if (user) {
       reset({
         name: user.name || '',
+        last_name: user.last_name || '',
         email: user.email || '',
+        mobile_number: user.mobile_number || '',
         password: '',
-        phone: user.mobile_number || '',
+        country: user.country || '',
         address: user.address || '',
+        city: user.city || '',
+        postal_code: user.postal_code || '',
       })
     }
   }, [user, reset])
@@ -55,25 +66,27 @@ export default function Profile() {
     setError(null)
 
     try {
-      // Call the real API
-      const updatedUser = await updateProfileAPI({
+      // Prepare data for API call, excluding password if empty
+      const updateData = {
         name: data.name,
+        last_name: data.last_name,
         email: data.email,
-        password: data.password || undefined,
-        phone: data.phone,
+        mobile_number: data.mobile_number,
+        country: data.country,
         address: data.address,
-      })
-
-      // Update Redux store (keeping the old action for compatibility)
-      dispatch(
-        updateProfile({
-          name: data.name,
-          email: data.email,
+        city: data.city,
+        postal_code: data.postal_code,
+        ...(data.password && {
           password: data.password,
-          phone: data.phone,
-          address: data.address,
-        })
-      )
+          password_confirmation: data.password,
+        }),
+      }
+
+      // Call the API
+      const updatedUser = await updateProfileAPI(updateData)
+
+      // Refresh user data in Redux store
+      dispatch(checkAuthAsync())
 
       message.success('Profile updated successfully!')
 
@@ -89,6 +102,16 @@ export default function Profile() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (authLoading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <div style={{ textAlign: 'center' }}>Loading...</div>
+        </div>
+      </div>
+    )
   }
 
   if (!user) {
@@ -123,41 +146,85 @@ export default function Profile() {
           layout="vertical"
           style={{ width: '100%' }}
         >
-          <Form.Item
-            label="Name"
-            validateStatus={errors.name ? 'error' : ''}
-            help={errors.name?.message}
-          >
-            <Input
-              {...register('name', { required: 'Name is required' })}
-              placeholder="Enter your name"
-            />
-          </Form.Item>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <Form.Item
+              label="First Name"
+              validateStatus={errors.name ? 'error' : ''}
+              help={errors.name?.message}
+            >
+              <Controller
+                name="name"
+                control={control}
+                rules={{ required: 'First name is required' }}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Enter your first name" />
+                )}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Last Name"
+              validateStatus={errors.last_name ? 'error' : ''}
+              help={errors.last_name?.message}
+            >
+              <Controller
+                name="last_name"
+                control={control}
+                rules={{ required: 'Last name is required' }}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Enter your last name" />
+                )}
+              />
+            </Form.Item>
+          </div>
 
           <Form.Item
             label="Email"
             validateStatus={errors.email ? 'error' : ''}
             help={errors.email?.message}
           >
-            <Input
-              {...register('email', {
+            <Controller
+              name="email"
+              control={control}
+              rules={{
                 required: 'Email is required',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: 'Invalid email address',
                 },
-              })}
-              type="email"
-              placeholder="Enter your email"
+              }}
+              render={({ field }) => (
+                <Input {...field} type="email" placeholder="Enter your email" />
+              )}
             />
           </Form.Item>
 
           <Form.Item
-            label="Phone"
-            validateStatus={errors.phone ? 'error' : ''}
-            help={errors.phone?.message}
+            label="Mobile Number"
+            validateStatus={errors.mobile_number ? 'error' : ''}
+            help={errors.mobile_number?.message}
           >
-            <Input {...register('phone')} placeholder="Enter your phone number" />
+            <Controller
+              name="mobile_number"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} placeholder="Enter your mobile number" />
+              )}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Country"
+            validateStatus={errors.country ? 'error' : ''}
+            help={errors.country?.message}
+          >
+            <Controller
+              name="country"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} placeholder="Enter your country" />
+              )}
+            />
           </Form.Item>
 
           <Form.Item
@@ -165,22 +232,60 @@ export default function Profile() {
             validateStatus={errors.address ? 'error' : ''}
             help={errors.address?.message}
           >
-            <Input {...register('address')} placeholder="Enter your address" />
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} placeholder="Enter your address" />
+              )}
+            />
           </Form.Item>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <Form.Item
+              label="City"
+              validateStatus={errors.city ? 'error' : ''}
+              help={errors.city?.message}
+            >
+              <Controller
+                name="city"
+                control={control}
+                render={({ field }) => <Input {...field} placeholder="Enter your city" />}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Postal Code"
+              validateStatus={errors.postal_code ? 'error' : ''}
+              help={errors.postal_code?.message}
+            >
+              <Controller
+                name="postal_code"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} placeholder="Enter your postal code" />
+                )}
+              />
+            </Form.Item>
+          </div>
 
           <Form.Item
             label="Password (leave empty to keep current)"
             validateStatus={errors.password ? 'error' : ''}
             help={errors.password?.message}
           >
-            <Input.Password
-              {...register('password', {
+            <Controller
+              name="password"
+              control={control}
+              rules={{
                 minLength: {
                   value: 6,
                   message: 'Password must be at least 6 characters',
                 },
-              })}
-              placeholder="Enter new password (optional)"
+              }}
+              render={({ field }) => (
+                <Input.Password {...field} placeholder="Enter new password (optional)" />
+              )}
             />
           </Form.Item>
 
