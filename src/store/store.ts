@@ -137,6 +137,27 @@ const profileSlice = createSlice<Profile>({
 
 export const { updateProfile } = profileSlice.actions
 
+export interface AuthState {
+  token: string | null
+}
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { token: localStorage.getItem('token') } as AuthState,
+  reducers: {
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload
+      localStorage.setItem('token', action.payload)
+    },
+    clearToken: (state) => {
+      state.token = null
+      localStorage.removeItem('token')
+    },
+  },
+})
+
+export const { setToken, clearToken } = authSlice.actions
+
 export const store = configureStore({
   reducer: {
     counter: counterSlice.reducer,
@@ -144,6 +165,7 @@ export const store = configureStore({
     users: usersSlice.reducer,
     orders: ordersSlice.reducer,
     profile: profileSlice.reducer,
+    auth: authSlice.reducer,
   },
 })
 

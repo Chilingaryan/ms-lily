@@ -49,6 +49,26 @@ const orders: Order[] = [
 ]
 
 const adapter = async (config: AxiosRequestConfig): Promise<AxiosResponse> => {
+  if (config.url === '/login' && config.method === 'post') {
+    const { email, password } = config.data as Record<string, string>
+    if (email && password) {
+      return {
+        data: { token: 'mock-token' },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      }
+    }
+    return {
+      data: { message: 'Unauthorized' },
+      status: 401,
+      statusText: 'Unauthorized',
+      headers: {},
+      config,
+    }
+  }
+
   if (config.method === 'get') {
     switch (config.url) {
       case '/users':
@@ -65,5 +85,11 @@ const adapter = async (config: AxiosRequestConfig): Promise<AxiosResponse> => {
 }
 
 export const api = axios.create({ adapter })
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
 export { users, products, orders }
