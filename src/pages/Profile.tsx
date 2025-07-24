@@ -1,14 +1,10 @@
-// src/pages/Profile.tsx - Updated with Reselect selectors
+// src/pages/Profile.tsx - Refactored with selectors
 import { Alert, Button, Form, Input, message, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { updateProfile as updateProfileAPI } from '../api/apiService'
-import {
-  useAppDispatch,
-  useAuth,
-  useIsProfileComplete,
-  useUserProfile,
-} from '../store/hooks'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { selectAuthLoading, selectUserProfile } from '../store/selectors'
 import { checkAuthAsync } from '../store/store'
 import styles from './Profile.module.scss'
 
@@ -25,9 +21,8 @@ interface FormValues {
 }
 
 export default function Profile() {
-  const { loading: authLoading } = useAuth()
-  const userProfile = useUserProfile()
-  const isProfileComplete = useIsProfileComplete()
+  const profile = useAppSelector(selectUserProfile)
+  const authLoading = useAppSelector(selectAuthLoading)
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -36,7 +31,7 @@ export default function Profile() {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
       name: '',
@@ -51,22 +46,22 @@ export default function Profile() {
     },
   })
 
-  // Reset form when user data changes
+  // Reset form when profile data changes
   useEffect(() => {
-    if (userProfile) {
+    if (profile) {
       reset({
-        name: userProfile.name || '',
-        last_name: userProfile.last_name || '',
-        email: userProfile.email || '',
-        mobile_number: userProfile.mobile_number || '',
+        name: profile.fullName.split(' ')[0] || '',
+        last_name: profile.fullName.split(' ').slice(1).join(' ') || '',
+        email: profile.email,
+        mobile_number: profile.phone,
         password: '',
-        country: userProfile.country || '',
-        address: userProfile.address || '',
-        city: userProfile.city || '',
-        postal_code: userProfile.postal_code || '',
+        country: profile.address.country,
+        address: profile.address.street,
+        city: profile.address.city,
+        postal_code: profile.address.postalCode,
       })
     }
-  }, [userProfile, reset])
+  }, [profile, reset])
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true)
@@ -90,7 +85,7 @@ export default function Profile() {
       }
 
       // Call the API
-      const updatedUser = await updateProfileAPI(updateData)
+      await updateProfileAPI(updateData)
 
       // Refresh user data in Redux store
       dispatch(checkAuthAsync())
@@ -121,7 +116,7 @@ export default function Profile() {
     )
   }
 
-  if (!userProfile) {
+  if (!profile) {
     return (
       <div className={styles.page}>
         <div className={styles.card}>
@@ -136,16 +131,6 @@ export default function Profile() {
       <div className={styles.card}>
         <Typography.Title>Profile</Typography.Title>
         <img className={styles.avatar} src="https://i.pravatar.cc/80" alt="avatar" />
-
-        {!isProfileComplete && (
-          <Alert
-            message="Incomplete Profile"
-            description="Please complete your profile information"
-            type="info"
-            showIcon
-            style={{ marginBottom: 16, width: '100%' }}
-          />
-        )}
 
         {error && (
           <Alert
@@ -306,7 +291,14 @@ export default function Profile() {
             />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit" block loading={loading} size="large">
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            loading={loading}
+            size="large"
+            disabled={!isDirty}
+          >
             {loading ? 'Updating...' : 'Save Changes'}
           </Button>
         </Form>

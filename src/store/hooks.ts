@@ -1,11 +1,9 @@
 // src/store/hooks.ts - Enhanced version with selector hooks
 import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import {
-  selectAuthLoadingState,
   selectAuthState,
   selectIsAdmin,
   selectIsAuthenticated,
-  selectIsProfileComplete,
   selectUserDisplayName,
   selectUserProfile,
 } from './selectors'
@@ -21,8 +19,6 @@ export const useUserDisplayName = () => useAppSelector(selectUserDisplayName)
 export const useUserProfile = () => useAppSelector(selectUserProfile)
 export const useIsAuthenticated = () => useAppSelector(selectIsAuthenticated)
 export const useIsAdmin = () => useAppSelector(selectIsAdmin)
-export const useAuthLoadingState = () => useAppSelector(selectAuthLoadingState)
-export const useIsProfileComplete = () => useAppSelector(selectIsProfileComplete)
 
 // Compound hooks for complex operations
 export const useAuthOperations = () => {

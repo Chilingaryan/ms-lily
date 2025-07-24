@@ -1,6 +1,5 @@
-// src/App.tsx - Enhanced version with Reselect selectors
+// src/App.tsx - Refactored with selectors
 import { Spin } from 'antd'
-import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import styles from './App.module.scss'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -11,8 +10,7 @@ import Orders from './pages/Orders'
 import Products from './pages/Products'
 import Profile from './pages/Profile'
 import Users from './pages/Users'
-import { useAppDispatch, useAuth } from './store/hooks'
-import { checkAuthAsync } from './store/store'
+import { useCheckAuth } from './store/authHooks'
 
 // Loading component
 const LoadingSpinner = () => (
@@ -31,36 +29,30 @@ const LoadingSpinner = () => (
   </div>
 )
 
-export default function App() {
-  const { isAuthenticated, loading } = useAuth()
-  const dispatch = useAppDispatch()
+// Private route wrapper
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useCheckAuth()
 
-  // Check authentication status on app load
-  useEffect(() => {
-    // Only check auth if we don't have loading state and no current auth state
-    if (!loading) {
-      dispatch(checkAuthAsync())
-    }
-  }, [dispatch])
-
-  // Show loading spinner while checking authentication
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner />
   }
 
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
+}
+
+export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
         <div className={styles.app}>
           <Routes>
-            <Route
-              path="/login"
-              element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
-            />
+            <Route path="/login" element={<Login />} />
             <Route
               path="/"
               element={
-                isAuthenticated ? <AdminLayout /> : <Navigate to="/login" replace />
+                <PrivateRoute>
+                  <AdminLayout />
+                </PrivateRoute>
               }
             >
               <Route index element={<Dashboard />} />

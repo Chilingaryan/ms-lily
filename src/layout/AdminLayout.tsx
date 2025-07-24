@@ -1,39 +1,22 @@
-// src/layout/AdminLayout.tsx - Updated with Reselect selectors
+// src/layout/AdminLayout.tsx - Refactored with custom hooks
 import { UserOutlined } from '@ant-design/icons'
 import { Avatar, Button, Layout, Menu, Popover, Spin } from 'antd'
-import { useEffect } from 'react'
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
-import { useAppDispatch, useAuth, useUserDisplayName } from '../store/hooks'
-import { checkAuthAsync, logoutAsync } from '../store/store'
+import { useAuth, useCheckAuth, useLogout } from '../store/authHooks'
 import styles from './AdminLayout.module.scss'
 
 const { Header, Content, Footer, Sider } = Layout
 
 export default function AdminLayout() {
   const location = useLocation()
-  const dispatch = useAppDispatch()
-  const { isAuthenticated, user, loading } = useAuth()
-  const userDisplayName = useUserDisplayName()
+  const { isAuthenticated, isLoading, displayName } = useAuth()
+  const { logout, isLoading: isLoggingOut } = useLogout()
 
   // Check authentication status on mount
-  useEffect(() => {
-    if (!user && isAuthenticated) {
-      dispatch(checkAuthAsync())
-    }
-  }, [dispatch, user, isAuthenticated])
-
-  const handleLogout = async () => {
-    try {
-      await dispatch(logoutAsync()).unwrap()
-      // Navigation will be handled by the redirect below
-    } catch (error) {
-      console.error('Logout error:', error)
-      // Even if logout fails, we still redirect
-    }
-  }
+  useCheckAuth()
 
   // Show loading while checking authentication
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         style={{
@@ -72,7 +55,7 @@ export default function AdminLayout() {
       <Layout>
         <Header className={styles.header}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span>Welcome, {userDisplayName}</span>
+            <span>Welcome, {displayName}</span>
             <Popover
               trigger="click"
               placement="bottomRight"
@@ -81,7 +64,7 @@ export default function AdminLayout() {
                   <Button type="text">
                     <Link to="/profile">Profile</Link>
                   </Button>
-                  <Button type="text" onClick={handleLogout} loading={loading}>
+                  <Button type="text" onClick={logout} loading={isLoggingOut}>
                     Logout
                   </Button>
                 </div>

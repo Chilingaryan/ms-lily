@@ -1,10 +1,9 @@
-// src/pages/Login.tsx - Updated with Reselect selectors
+// src/pages/Login.tsx - Refactored with custom hooks
 import { Alert, Button, Input, Typography } from 'antd'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAuth } from '../store/hooks'
-import { clearError, loginAsync } from '../store/store'
+import { Navigate } from 'react-router-dom'
+import { useAuth, useLogin } from '../store/authHooks'
 import styles from './Login.module.scss'
 
 interface LoginForm {
@@ -13,37 +12,32 @@ interface LoginForm {
 }
 
 export default function Login() {
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
-  const { loading, error, isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
+  const { login, isLoading, error, clearError } = useLogin()
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>()
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/', { replace: true })
-    }
-  }, [isAuthenticated, navigate])
+  } = useForm<LoginForm>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
   // Clear error when component mounts
   useEffect(() => {
-    dispatch(clearError())
-  }, [dispatch])
+    clearError()
+  }, [clearError])
+
+  // Redirect if already logged in
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />
+  }
 
   const onSubmit = async (data: LoginForm) => {
-    try {
-      const result = await dispatch(loginAsync(data)).unwrap()
-      // Navigation will happen automatically due to the useEffect above
-      console.log('Login successful:', result)
-    } catch (error) {
-      // Error is handled by Redux slice
-      console.error('Login failed:', error)
-    }
+    await login(data)
   }
 
   return (
@@ -57,7 +51,7 @@ export default function Login() {
             description={error}
             type="error"
             closable
-            onClose={() => dispatch(clearError())}
+            onClose={clearError}
             style={{ marginBottom: 16 }}
           />
         )}
@@ -80,6 +74,7 @@ export default function Login() {
                 type="email"
                 placeholder="Enter your email"
                 size="large"
+                disabled={isLoading}
               />
             )}
           />
@@ -99,7 +94,12 @@ export default function Login() {
               },
             }}
             render={({ field }) => (
-              <Input.Password {...field} placeholder="Enter your password" size="large" />
+              <Input.Password
+                {...field}
+                placeholder="Enter your password"
+                size="large"
+                disabled={isLoading}
+              />
             )}
           />
           {errors.password && (
@@ -107,8 +107,8 @@ export default function Login() {
           )}
         </label>
 
-        <Button type="primary" htmlType="submit" loading={loading} block size="large">
-          {loading ? 'Signing in...' : 'Login'}
+        <Button type="primary" htmlType="submit" loading={isLoading} block size="large">
+          {isLoading ? 'Signing in...' : 'Login'}
         </Button>
 
         <div style={{ marginTop: 16, textAlign: 'center' }}>
