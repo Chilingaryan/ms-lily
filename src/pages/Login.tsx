@@ -1,5 +1,5 @@
 import { Button, Input } from 'antd'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useAppDispatch } from '../store/hooks'
 import { login } from '../store/store'
 import { useNavigate } from 'react-router-dom'
@@ -14,7 +14,7 @@ export default function Login() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginForm>()
@@ -32,12 +32,22 @@ export default function Login() {
         <h1>Login</h1>
         <label className={styles.field}>
           Email
-          <Input {...register('email', { required: true })} />
+          <Controller
+            name="email"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => <Input {...field} />}
+          />
           {errors.email && <span className={styles.error}>Email is required</span>}
         </label>
         <label className={styles.field}>
           Password
-          <Input.Password {...register('password', { required: true })} />
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => <Input.Password {...field} />}
+          />
           {errors.password && (
             <span className={styles.error}>Password is required</span>
           )}
