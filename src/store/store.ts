@@ -143,7 +143,8 @@ export interface AuthState {
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { loggedIn: true } as AuthState,
+  // start the app logged out so the login flow can be tested
+  initialState: { loggedIn: false } as AuthState,
   reducers: {
     login: (state) => {
       state.loggedIn = true
