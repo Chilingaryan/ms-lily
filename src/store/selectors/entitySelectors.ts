@@ -1,6 +1,6 @@
 // src/store/entitySelectors.ts
 import { createSelector } from '@reduxjs/toolkit'
-import type { Order, Product, RootState, User } from './store'
+import type { Order, Product, RootState, User } from '../store'
 
 // Mock data selectors (to be replaced with actual state when implemented)
 // These would normally select from Redux state slices

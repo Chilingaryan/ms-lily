@@ -1,6 +1,6 @@
 import { Table, Tag, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import { api } from '../../api/mock'
+import { api } from '../../service/mock'
 import type { Order, Product, User } from '../../store/store'
 import styles from './Orders.module.scss'
 

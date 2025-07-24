@@ -1,16 +1,16 @@
 // src/App.tsx - Refactored with selectors
 import { Spin } from 'antd'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import ErrorBoundary from '../components/ErrorBoundary'
+import AdminLayout from '../layout/AdminLayout'
+import Dashboard from '../pages/dashboard/Dashboard'
+import Login from '../pages/login/Login'
+import Orders from '../pages/orders/Orders'
+import Products from '../pages/products/Products'
+import Profile from '../pages/profile/Profile'
+import Users from '../pages/users/Users'
+import { useCheckAuth } from '../store/hooks/authHooks'
 import styles from './App.module.scss'
-import ErrorBoundary from './components/ErrorBoundary'
-import AdminLayout from './layout/AdminLayout'
-import Dashboard from './pages/dashboard/Dashboard'
-import Login from './pages/login/Login'
-import Orders from './pages/orders/Orders'
-import Products from './pages/products/Products'
-import Profile from './pages/profile/Profile'
-import Users from './pages/users/Users'
-import { useCheckAuth } from './store/hooks/authHooks'
 
 // Loading component
 const LoadingSpinner = () => (

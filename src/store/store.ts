@@ -1,5 +1,5 @@
 import { configureStore, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type * as apiService from '../api/apiService'
+import type * as apiService from '../service/apiService'
 import {
   getCurrentUser,
   getStoredToken,
@@ -7,7 +7,7 @@ import {
   loginUser,
   logoutUser,
   registerUser,
-} from '../api/apiService'
+} from '../service/apiService'
 
 // Types for the application
 export interface Product {

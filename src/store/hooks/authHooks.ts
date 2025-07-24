@@ -1,7 +1,7 @@
 // src/store/authHooks.ts
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { LoginCredentials, RegisterData } from '../../api/apiService'
+import type { LoginCredentials, RegisterData } from '../../service/apiService'
 import {
   selectAuthLoading,
   selectAuthStatus,

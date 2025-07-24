@@ -1,5 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import type { Product, User, Order } from '../store/store'
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import type { Order, Product, User } from '../store/store'
 
 const users: User[] = [
   { id: '1', name: 'Alice', email: 'alice@example.com', active: true },
@@ -11,7 +11,7 @@ const products: Product[] = [
     id: '1',
     name: 'Sneaker A',
     brand: 'BrandX',
-    sizes: [7,8,9],
+    sizes: [7, 8, 9],
     price: 120,
     stock: 10,
     image: '',
@@ -22,7 +22,7 @@ const products: Product[] = [
     id: '2',
     name: 'Sneaker B',
     brand: 'BrandY',
-    sizes: [8,9,10],
+    sizes: [8, 9, 10],
     price: 150,
     stock: 5,
     image: '',
@@ -66,4 +66,4 @@ const adapter = async (config: AxiosRequestConfig): Promise<AxiosResponse> => {
 
 export const api = axios.create({ adapter })
 
-export { users, products, orders }
+export { orders, products, users }
