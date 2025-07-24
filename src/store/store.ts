@@ -137,6 +137,25 @@ const profileSlice = createSlice<Profile>({
 
 export const { updateProfile } = profileSlice.actions
 
+export interface AuthState {
+  loggedIn: boolean
+}
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { loggedIn: true } as AuthState,
+  reducers: {
+    login: (state) => {
+      state.loggedIn = true
+    },
+    logout: (state) => {
+      state.loggedIn = false
+    },
+  },
+})
+
+export const { login, logout } = authSlice.actions
+
 export const store = configureStore({
   reducer: {
     counter: counterSlice.reducer,
@@ -144,6 +163,7 @@ export const store = configureStore({
     users: usersSlice.reducer,
     orders: ordersSlice.reducer,
     profile: profileSlice.reducer,
+    auth: authSlice.reducer,
   },
 })
 
