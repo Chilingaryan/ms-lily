@@ -2,14 +2,14 @@ import { Layout, Menu } from 'antd'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import styles from './AdminLayout.module.scss'
 
-const { Header, Content, Sider } = Layout
+const { Header, Content, Footer, Sider } = Layout
 
 export default function AdminLayout() {
   const location = useLocation()
 
   return (
     <Layout className={styles.layout}>
-      <Sider breakpoint="lg" collapsedWidth="0">
+      <Sider breakpoint="lg" collapsedWidth="0" className={styles.sider}>
         <div className={styles.logo}>Admin</div>
         <Menu
           theme="dark"
@@ -25,10 +25,11 @@ export default function AdminLayout() {
         />
       </Sider>
       <Layout>
-        <Header style={{ background: '#fff', padding: 0 }} />
+        <Header className={styles.header}>Admin Panel</Header>
         <Content className={styles.content}>
           <Outlet />
         </Content>
+        <Footer className={styles.footer}>© 2024 Admin Panel</Footer>
       </Layout>
     </Layout>
   )
