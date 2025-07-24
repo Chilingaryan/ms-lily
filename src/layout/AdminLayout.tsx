@@ -32,9 +32,7 @@ export default function AdminLayout() {
   }
 
   // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />
 
   return (
     <Layout className={styles.layout}>

@@ -20,18 +20,12 @@ import { useAppDispatch, useAppSelector } from './hooks'
 
 // Hook for authentication state
 export const useAuth = () => {
-  const dispatch = useAppDispatch()
   const authStatus = useAppSelector(selectAuthStatus)
   const user = useAppSelector((state) => state.auth.user)
   const displayName = useAppSelector(selectUserDisplayName)
   const isAdmin = useAppSelector(selectIsAdmin)
 
-  return {
-    ...authStatus,
-    user,
-    displayName,
-    isAdmin,
-  }
+  return { ...authStatus, user, displayName, isAdmin }
 }
 
 // Hook for login functionality
@@ -149,11 +143,7 @@ export const useAuthGuard = (requireAdmin = false) => {
     }
   }, [isAuthenticated, isAdmin, isLoading, navigate, requireAdmin])
 
-  return {
-    isAuthenticated,
-    isAdmin,
-    isLoading,
-  }
+  return { isAuthenticated, isAdmin, isLoading }
 }
 
 // Hook for checking auth on mount
@@ -162,9 +152,7 @@ export const useCheckAuth = () => {
   const { isAuthenticated, isLoading } = useAppSelector(selectAuthStatus)
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      dispatch(checkAuthAsync())
-    }
+    if (!isLoading && !isAuthenticated) dispatch(checkAuthAsync())
   }, [dispatch, isAuthenticated, isLoading])
 
   return { isAuthenticated, isLoading }

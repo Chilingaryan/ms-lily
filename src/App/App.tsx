@@ -33,9 +33,7 @@ const LoadingSpinner = () => (
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useCheckAuth()
 
-  if (isLoading) {
-    return <LoadingSpinner />
-  }
+  if (isLoading) return <LoadingSpinner />
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
 }
