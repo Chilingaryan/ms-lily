@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AdminLayout from './layout/AdminLayout'
+import RequireAuth from './components/RequireAuth'
+import SignIn from './pages/SignIn'
 import styles from './App.module.scss'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
@@ -12,7 +14,15 @@ export default function App() {
     <BrowserRouter>
       <div className={styles.app}>
       <Routes>
-        <Route path="/" element={<AdminLayout />}>
+        <Route path="/login" element={<SignIn />} />
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <AdminLayout />
+            </RequireAuth>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="products" element={<Products />} />
