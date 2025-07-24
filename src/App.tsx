@@ -1,4 +1,4 @@
-// src/App.tsx - Enhanced version with Error Boundary
+// src/App.tsx - Enhanced version with Reselect selectors
 import { Spin } from 'antd'
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
@@ -11,7 +11,7 @@ import Orders from './pages/Orders'
 import Products from './pages/Products'
 import Profile from './pages/Profile'
 import Users from './pages/Users'
-import { useAppDispatch, useAppSelector } from './store/hooks'
+import { useAppDispatch, useAuth } from './store/hooks'
 import { checkAuthAsync } from './store/store'
 
 // Loading component
@@ -32,7 +32,7 @@ const LoadingSpinner = () => (
 )
 
 export default function App() {
-  const { loggedIn, loading } = useAppSelector((s) => s.auth)
+  const { isAuthenticated, loading } = useAuth()
   const dispatch = useAppDispatch()
 
   // Check authentication status on app load
@@ -55,11 +55,13 @@ export default function App() {
           <Routes>
             <Route
               path="/login"
-              element={loggedIn ? <Navigate to="/" replace /> : <Login />}
+              element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
             />
             <Route
               path="/"
-              element={loggedIn ? <AdminLayout /> : <Navigate to="/login" replace />}
+              element={
+                isAuthenticated ? <AdminLayout /> : <Navigate to="/login" replace />
+              }
             >
               <Route index element={<Dashboard />} />
               <Route path="profile" element={<Profile />} />

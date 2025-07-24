@@ -1,9 +1,14 @@
-// src/pages/Profile.tsx - Updated version
+// src/pages/Profile.tsx - Updated with Reselect selectors
 import { Alert, Button, Form, Input, message, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { updateProfile as updateProfileAPI } from '../api/apiService'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import {
+  useAppDispatch,
+  useAuth,
+  useIsProfileComplete,
+  useUserProfile,
+} from '../store/hooks'
 import { checkAuthAsync } from '../store/store'
 import styles from './Profile.module.scss'
 
@@ -20,7 +25,9 @@ interface FormValues {
 }
 
 export default function Profile() {
-  const { user, loading: authLoading } = useAppSelector((s) => s.auth)
+  const { loading: authLoading } = useAuth()
+  const userProfile = useUserProfile()
+  const isProfileComplete = useIsProfileComplete()
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,20 +53,20 @@ export default function Profile() {
 
   // Reset form when user data changes
   useEffect(() => {
-    if (user) {
+    if (userProfile) {
       reset({
-        name: user.name || '',
-        last_name: user.last_name || '',
-        email: user.email || '',
-        mobile_number: user.mobile_number || '',
+        name: userProfile.name || '',
+        last_name: userProfile.last_name || '',
+        email: userProfile.email || '',
+        mobile_number: userProfile.mobile_number || '',
         password: '',
-        country: user.country || '',
-        address: user.address || '',
-        city: user.city || '',
-        postal_code: user.postal_code || '',
+        country: userProfile.country || '',
+        address: userProfile.address || '',
+        city: userProfile.city || '',
+        postal_code: userProfile.postal_code || '',
       })
     }
-  }, [user, reset])
+  }, [userProfile, reset])
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true)
@@ -114,7 +121,7 @@ export default function Profile() {
     )
   }
 
-  if (!user) {
+  if (!userProfile) {
     return (
       <div className={styles.page}>
         <div className={styles.card}>
@@ -129,6 +136,16 @@ export default function Profile() {
       <div className={styles.card}>
         <Typography.Title>Profile</Typography.Title>
         <img className={styles.avatar} src="https://i.pravatar.cc/80" alt="avatar" />
+
+        {!isProfileComplete && (
+          <Alert
+            message="Incomplete Profile"
+            description="Please complete your profile information"
+            type="info"
+            showIcon
+            style={{ marginBottom: 16, width: '100%' }}
+          />
+        )}
 
         {error && (
           <Alert

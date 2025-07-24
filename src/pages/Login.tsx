@@ -1,9 +1,9 @@
-// src/pages/Login.tsx - Updated version
+// src/pages/Login.tsx - Updated with Reselect selectors
 import { Alert, Button, Input, Typography } from 'antd'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { useAppDispatch, useAuth } from '../store/hooks'
 import { clearError, loginAsync } from '../store/store'
 import styles from './Login.module.scss'
 
@@ -15,7 +15,7 @@ interface LoginForm {
 export default function Login() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { loading, error, loggedIn } = useAppSelector((state) => state.auth)
+  const { loading, error, isAuthenticated } = useAuth()
 
   const {
     control,
@@ -25,10 +25,10 @@ export default function Login() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (loggedIn) {
+    if (isAuthenticated) {
       navigate('/', { replace: true })
     }
-  }, [loggedIn, navigate])
+  }, [isAuthenticated, navigate])
 
   // Clear error when component mounts
   useEffect(() => {
