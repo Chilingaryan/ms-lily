@@ -1,7 +1,7 @@
 import { Table, Tag, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import { api } from '../api/mock'
-import type { User } from '../store/store'
+import { api } from '../../api/mock'
+import type { User } from '../../store/store'
 import styles from './Users.module.scss'
 
 export default function Users() {

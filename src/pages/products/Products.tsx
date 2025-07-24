@@ -1,13 +1,13 @@
 // src/pages/Products.tsx - Fixed to work with component-level selectors
 import { Card, Input, Select, Space, Statistic, Table, Tag, Typography } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
-import { api } from '../api/mock'
+import { api } from '../../api/mock'
 import {
   createProductSelectors,
   createSearchSelector,
   createSortSelector,
-} from '../store/dataSelectors'
-import type { Product } from '../store/store'
+} from '../../store/selectors/dataSelectors'
+import type { Product } from '../../store/store'
 import styles from './Products.module.scss'
 
 const { Search } = Input

@@ -3,7 +3,7 @@ import { Alert, Button, Input, Typography } from 'antd'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Navigate } from 'react-router-dom'
-import { useAuth, useLogin } from '../store/authHooks'
+import { useAuth, useLogin } from '../../store/hooks/authHooks'
 import styles from './Login.module.scss'
 
 interface LoginForm {

@@ -1,22 +1,22 @@
 // src/store/authHooks.ts
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { LoginCredentials, RegisterData } from '../api/apiService'
-import { useAppDispatch, useAppSelector } from './hooks'
+import type { LoginCredentials, RegisterData } from '../../api/apiService'
 import {
   selectAuthLoading,
   selectAuthStatus,
   selectIsAdmin,
   selectUserDisplayName,
   selectUserProfile,
-} from './selectors'
+} from '../selectors'
 import {
   checkAuthAsync,
   clearError,
   loginAsync,
   logoutAsync,
   registerAsync,
-} from './store'
+} from '../store'
+import { useAppDispatch, useAppSelector } from './hooks'
 
 // Hook for authentication state
 export const useAuth = () => {

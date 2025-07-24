@@ -2,7 +2,7 @@
 import { UserOutlined } from '@ant-design/icons'
 import { Avatar, Button, Layout, Menu, Popover, Spin } from 'antd'
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
-import { useAuth, useCheckAuth, useLogout } from '../store/authHooks'
+import { useAuth, useCheckAuth, useLogout } from '../store/hooks/authHooks'
 import styles from './AdminLayout.module.scss'
 
 const { Header, Content, Footer, Sider } = Layout

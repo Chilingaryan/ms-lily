@@ -2,10 +2,10 @@
 import { Alert, Button, Form, Input, message, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { updateProfile as updateProfileAPI } from '../api/apiService'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { selectAuthLoading, selectUserProfile } from '../store/selectors'
-import { checkAuthAsync } from '../store/store'
+import { updateProfile as updateProfileAPI } from '../../api/apiService'
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks'
+import { selectAuthLoading, selectUserProfile } from '../../store/selectors'
+import { checkAuthAsync } from '../../store/store'
 import styles from './Profile.module.scss'
 
 interface FormValues {

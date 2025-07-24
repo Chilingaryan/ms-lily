@@ -1,10 +1,10 @@
 // src/pages/Dashboard.tsx - Refactored with selectors
 import { Card, Spin } from 'antd'
 import { useEffect, useState } from 'react'
-import { api } from '../api/mock'
-import { useAppSelector } from '../store/hooks'
-import { selectUserDisplayName } from '../store/selectors'
-import type { Order, Product, User } from '../store/store'
+import { api } from '../../api/mock'
+import { useAppSelector } from '../../store/hooks/hooks'
+import { selectUserDisplayName } from '../../store/selectors'
+import type { Order, Product, User } from '../../store/store'
 import styles from './Dashboard.module.scss'
 
 // Custom hook for dashboard data

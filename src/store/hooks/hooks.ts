@@ -6,8 +6,8 @@ import {
   selectIsAuthenticated,
   selectUserDisplayName,
   selectUserProfile,
-} from './selectors'
-import type { AppDispatch, RootState } from './store'
+} from '../selectors'
+import type { AppDispatch, RootState } from '../store'
 
 // Base hooks
 export const useAppDispatch: () => AppDispatch = useDispatch

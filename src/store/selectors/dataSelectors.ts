@@ -1,6 +1,6 @@
 // src/store/dataSelectors.ts - Additional selectors for application data
 import { createSelector } from '@reduxjs/toolkit'
-import type { Order, Product, User } from './store'
+import type { Order, Product, User } from '../store'
 
 // If you extend your store to include data slices in the future, these selectors will be ready
 // For now, they can be used with component-level state or extended when you add data to Redux
