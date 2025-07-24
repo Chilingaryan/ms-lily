@@ -1,11 +1,22 @@
-import { Layout, Menu } from 'antd'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Layout, Menu, Avatar, Popover, Button } from 'antd'
+import { Link, Outlet, useLocation, Navigate } from 'react-router-dom'
+import { UserOutlined } from '@ant-design/icons'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { logout } from '../store/store'
 import styles from './AdminLayout.module.scss'
 
 const { Header, Content, Footer, Sider } = Layout
 
 export default function AdminLayout() {
   const location = useLocation()
+  const dispatch = useAppDispatch()
+  const loggedIn = useAppSelector((s) => s.auth.loggedIn)
+
+  const handleLogout = () => {
+    dispatch(logout())
+  }
+
+  if (!loggedIn) return <Navigate to="/login" replace />
 
   return (
     <Layout className={styles.layout}>
@@ -25,7 +36,16 @@ export default function AdminLayout() {
         />
       </Sider>
       <Layout>
-        <Header className={styles.header}>Admin Panel</Header>
+        <Header className={styles.header}>
+          <div>Admin Panel</div>
+          <Popover
+            trigger="click"
+            placement="bottomRight"
+            content={<Button type="text" onClick={handleLogout}>Logout</Button>}
+          >
+            <Avatar className={styles.avatar} icon={<UserOutlined />} />
+          </Popover>
+        </Header>
         <Content className={styles.content}>
           <Outlet />
         </Content>
