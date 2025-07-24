@@ -37,7 +37,6 @@ export default function AdminLayout() {
       </Sider>
       <Layout>
         <Header className={styles.header}>
-          <div>Admin Panel</div>
           <Popover
             trigger="click"
             placement="bottomRight"
