@@ -1,0 +1,44 @@
+.layout {
+  min-height: 100vh;
+}
+.sider {
+  min-height: 100vh;
+}
+.logo {
+  height: 32px;
+  margin: 16px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+}
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  background: #fff;
+  padding: 0 16px;
+  line-height: 64px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.avatar {
+  cursor: pointer;
+}
+.content {
+  margin: 24px;
+  background: #fff;
+  padding: 24px;
+}
+.footer {
+  text-align: center;
+  padding: 16px;
+  background: #f0f0f0;
+}
+
+.popover {
+  display: flex;
+  flex-direction: column;
+}
